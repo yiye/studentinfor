@@ -1,0 +1,114 @@
+<?php 
+/** 
+  * 
+  */
+   require_once('connectDB.php');
+    //define your token 
+    define("TOKEN", "yiye"); 
+    $db = new HandleDB();
+    $arr = array('content' => "begin" );
+    echo "db".$db->insertItem($arr);  
+    $wechatObj = new wechatCallbackapiTest(); 
+    //$wechatObj->valid();//验证完成后可将此行代码注释掉 
+    $wechatObj->responseMsg();
+    class wechatCallbackapiTest 
+    { 
+        public function valid() 
+        { 
+            $echoStr = $_GET["echostr"]; 
+       
+            //valid signature , option 
+            if($this->checkSignature()){ 
+                echo $echoStr; 
+                exit; 
+            } 
+        } 
+       
+        public function responseMsg() 
+        { 
+            //get post data, May be due to the different environments 
+            $postStr = $GLOBALS["HTTP_RAW_POST_DATA"]; 
+       
+            //extract post data 
+            $db = new HandleDB();
+            $arr = array('content' => $postStr );
+            $db->insertItem($arr); 
+            if (!empty($postStr)){ 
+                       
+                    $postObj = simplexml_load_string($postStr, 'SimpleXMLElement', LIBXML_NOCDATA); 
+                    $fromUsername = $postObj->FromUserName; 
+                    $toUsername = $postObj->ToUserName; 
+                    $keyword = trim($postObj->Content); 
+                    $time = time(); 
+                    $textTpl = "<xml> 
+                                <ToUserName><![CDATA[%s]]></ToUserName> 
+                                <FromUserName><![CDATA[%s]]></FromUserName> 
+                                <CreateTime>%s</CreateTime> 
+                                <MsgType><![CDATA[%s]]></MsgType> 
+                                <Content><![CDATA[%s]]></Content> 
+                                <FuncFlag>0</FuncFlag> 
+                                </xml>"; 
+                     //将结果插入数据库
+                    $db = new HandleDB();
+                    $arr = array('content' => $textTpl );
+                    $db->insertItem($arr);
+                    if(!empty( $keyword )) 
+                    { 
+                        $msgType = "text"; 
+                        $contentStr = "Welcome to wechat world!"; 
+                        $resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr); 
+                        echo $resultStr; 
+                    }else{ 
+                        echo "Input something..."; 
+                    } 
+       
+            }else { 
+                echo ""; 
+                exit; 
+            } 
+        } 
+               
+        private function checkSignature() 
+        { 
+            $signature = $_GET["signature"]; 
+            $timestamp = $_GET["timestamp"]; 
+            $nonce = $_GET["nonce"];     
+                       
+            $token = TOKEN; 
+            $tmpArr = array($token, $timestamp, $nonce); 
+            sort($tmpArr); 
+            $tmpStr = implode( $tmpArr ); 
+            $tmpStr = sha1( $tmpStr ); 
+               
+            if( $tmpStr == $signature ){ 
+                return true; 
+            }else{ 
+                return false; 
+            } 
+        } 
+    } 
+    /**
+      * 数据库连接库
+      */
+
+      class HandleDB
+      {
+          private $db;
+          private $conn;
+          function __construct()
+          {
+              # code...
+            $dbname = 'jJcwXhkFHcLARBdBzBda';
+            $host = getenv('HTTP_BAE_ENV_ADDR_SQL_IP');
+            $port = getenv('HTTP_BAE_ENV_ADDR_SQL_PORT');
+            $user = getenv('HTTP_BAE_ENV_AK');
+            $pwd = getenv('HTTP_BAE_ENV_SK');
+            $this->db = new AdminDB('mySQL',$host.':'.$port,$user,$pwd,$dbname);
+            $this->conn = $this->db->conn;
+          }
+          function insertItem($arr){
+            $strQuery = "INSERT INTO `weixin`(`content`) VALUES (".$arr['content'].")";
+            return mysql_query($query_str,$conn);
+          }
+      }  
+?>

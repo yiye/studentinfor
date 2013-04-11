@@ -1,0 +1,29 @@
+<?php
+	require_once("newsDB.php");
+	$db = $handle_db = new newsDB();
+	$news_id = $_POST['id'] or $news_id = $_GET['id'];
+	$detail = $db->get_news_by_id($news_id);
+?>	
+
+<!doctype html>
+<html>
+<head>
+	<title><?php echo $detail['title'];?></title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+	<style type="text/css">
+		img{
+			max-width: 100%;
+			width: 100%;
+			height: auto;
+		}
+		p{
+			background-color: white;
+			margin-top: 3px;
+			width: 100%;
+		}
+	</style>
+</head>
+<body>
+    <?php echo $detail['content'];?>
+</body></html>

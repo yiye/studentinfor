@@ -1,0 +1,7 @@
+<?php
+	if (!'null') {
+		# code...
+		echo "string";
+	}
+	
+?>

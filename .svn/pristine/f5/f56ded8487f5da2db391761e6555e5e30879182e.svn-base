@@ -1,0 +1,6 @@
+<?php
+	while($i<100){
+		echo "thanks you stay with me when I unhappy!<br>";
+		$i++;
+	}
+?>

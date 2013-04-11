@@ -1,0 +1,9 @@
+<?php
+	include_once("action.searchbook.php");
+	include_once("handleMem.php");
+	$a = new SearchBook("1234354","c++");
+	var_dump($a->getFive());
+
+ $b = new HnadleMem();
+var_dump($b->getBooksByTimes("1234354",1));
+?>

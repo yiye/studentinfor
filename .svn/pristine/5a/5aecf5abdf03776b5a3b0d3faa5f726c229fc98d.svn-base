@@ -1,0 +1,113 @@
+<?php
+	/**
+	*  利用curl在http://opac.lib.dlut.edu.cn:8081/m/opac/search.action执行查找动作
+	*/
+	require_once("handleMem.php");
+	class SearchBook
+	{
+		private $uesr;  //作为'BaeMemcache的key使用
+		private $q; //检索的书名
+		private $five;
+		function __construct($user,$q)
+		{
+			# code...
+			$this->user = $user;
+			$this->q = $q;
+			$this->searchTheFirstBook();
+		}
+		/*
+		*根据$url 进行页面抓取
+		*返回 string
+		*/
+		private function search($url)
+		{
+			# code...
+			$ch = curl_init();
+ 	 	    curl_setopt($ch, CURLOPT_URL, $url);
+ 		    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+ 		    curl_setopt($ch, CURLOPT_HEADER, 1);
+ 		    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+ 	 	    $output = curl_exec($ch);
+ 			 if ($output === FALSE) {
+ 	 				die("cURL Error: " .curl_error($ch));
+ 			 }
+ 			 curl_close($ch);
+ 			//var_dump($output);
+ 		    return $output;
+		}
+		/*
+		*处理页面抓取来个dom.提取有用信息.并且将除去头五条剩下的存入memcache中
+		*成功返回true,失败返回false
+		*/
+		private function parseDom($dom,$isFirt = FALSE)
+		{
+			# code...
+			$strREX = "#(?<=<p>).*(?=</p>)#iUus";
+			preg_match_all($strREX, $dom, $arr_p);
+			$arr_book = $arr_p[0];
+			array_pop($arr_book);
+			array_pop($arr_book);
+			//var_dump($arr_book);
+			if (count($arr_book)==0) {
+				# code...
+				return false;
+			}
+			$book_msg = array();
+			foreach ($arr_book as $key => $value) {
+				# code...
+				preg_match_all("#\/m\/opac\/detail\.action.*\?id=\d*\"\>(?<name>.*)</a><br/>#iUu", $value, $temp);
+				$book_msg['name'] = $temp["name"][0];
+				preg_match_all("#(?<=<span>)[0-9A-Z\s\-\#\.]{4,30}#u", $value, $temp);
+				$book_msg['number'] = $temp[0][0];
+				preg_match_all("#<span>[0-9A-Z\s\-\#\.]{4,30}(?<publish>.*)<br/>#iu", $value, $temp);
+				$book_msg['publish'] =  $temp["publish"][0];
+				preg_match_all("#馆藏/可借：\d\/\d#iu", $value, $temp);
+				$book_msg['msg'] = $temp[0][0];
+				$arr_book[$key] = $book_msg;
+			}
+			//var_dump($arr_book);
+			$this->five = array_slice($arr_book, 0,5,true);
+          	$mem = new HandleMem();
+          	$mem->storeInMem($this->user,$arr_book);
+			return true;
+		}
+		/*
+		*根据书名来查找,只抓取一页
+		*成功返回true,失败返回false
+		*/
+		private function searchTheFirstBook()
+		{
+			# code...
+			$url = "http://opac.lib.dlut.edu.cn:8081/m/opac/search.action?q=".$this->q."&title=%E9%A2%98%E5%90%8D";
+			//echo $url."<br>";
+			$dom = $this->search($url);
+			return $this->parseDom($dom);
+		}
+		/*
+		*抓取剩下的页
+		*成功返回true,失败返回false
+		*/
+		private function searchTheLeftBook()
+		{
+			# code...
+		}
+		/*
+		*获取头五条书目
+		*成功返回书目,失败返回false
+		*/
+		public function getFive()
+		{
+			# code...
+			if ($this->five) {
+				# code...
+				return $this->five;
+			}else{
+				return false;
+			}
+
+		}
+		
+	}
+	 $a = new SearchBook("php","s");
+	 var_dump($a->getFive());
+?>

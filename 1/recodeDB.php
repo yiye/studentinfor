@@ -1,0 +1,28 @@
+<?
+	/**
+	* 
+	*/
+	class Recode
+	{
+		
+		private $db;
+          private $conn;
+          function __construct()
+          {
+              # code...
+            $dbname = 'jJcwXhkFHcLARBdBzBda';
+            $host = getenv('HTTP_BAE_ENV_ADDR_SQL_IP');
+            $port = getenv('HTTP_BAE_ENV_ADDR_SQL_PORT');
+            $user = getenv('HTTP_BAE_ENV_AK');
+            $pwd = getenv('HTTP_BAE_ENV_SK');
+            $this->db = new AdminDB('mySQL',$host.':'.$port,$user,$pwd,$dbname);
+            $this->conn = $this->db->conn;
+            //echo "conn ".$this->conn;
+          }
+          function insert($v){
+          		$strQuery = "INSERT INTO `recode`(`value`) VALUES ('$v')";
+            	mysql_query($strQuery,$this->conn);
+          }
+        
+      }
+?>

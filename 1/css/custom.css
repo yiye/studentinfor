@@ -1,0 +1,9 @@
+@charset 'utf-8';
+.ui-li-icon.origin{max-height: 40px;max-width: 40px; left: 1px;margin-top: 7px;}
+.title{word-wrap:break-word;white-space: pre-wrap;}
+.date{float: right;}
+.author{float: left;}
+.home{background-color: #fefefe;}
+.header{background: #fff;border-top: 3px solid #6ABA2F;border-bottom: 1px solid #e0e0e0;color: #777;text-shadow: 0 1px 0 #fff;-webkit-box-shadow: 0 0 5px rgba(0,0,0,.15);-moz-box-shadow: 0 0 5px rgba(0,0,0,.15);box-shadow: 0 0 5px rgba(0,0,0,.15);}
+.header.header-fixed h1{font-size: 1.5em;margin: 0.6em 3.375em}
+.header.header-fixed:not(.ui-fixed-hidden){border-top-width: 4px;padding-top: 0;}

@@ -1,0 +1,5 @@
+<?php
+	include_once("action.searchbook.php");
+	$a = new SearchBook("c++","1234354");
+	var_dump($a->getFive());
+?>

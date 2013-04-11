@@ -1,0 +1,18 @@
+<?php
+	include_once("action.searchbook.php");
+	include_once("handleMem.php");
+	$a = new SearchBook("1234354","c++");
+	$b = $a->getFive()
+?>
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<?php
+	print_r($b);
+	?>
+</body>
+</html>

@@ -1,0 +1,6 @@
+@charset 'utf-8';
+.load{background-image: url(../img/loading.jpg);background-size: cover;background-position: center center;background-repeat: no-repeat;}
+.ui-li-icon.origin{max-height: 40px;max-width: 40px; left: 1px;}
+.title{word-wrap:break-word;white-space: pre-wrap;}
+.date{float: right;}
+.author{float: left;}
