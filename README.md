@@ -5,7 +5,7 @@
 ###支持多种访问方式###
 1.[移动web方式(`jQuery Mobile `)版](http://ssdlut.duapp.com)
 
-2.微信版: 微信号(`ssdlut`)![二维码](http://)
+2.微信版: 微信号(`ssdlut`)![二维码](https://github.com/yiye/studentinfor/commit/2afeb0d5f1643611a81ac71465a23af378c7c6bb)
 
 3.安卓平台
 
